@@ -17,7 +17,7 @@ spring:
         max-request-size: 500MB
         max-file-size: 500MB
 server:
-  port: 8089
+  port: 8086
   error:
     whitelabel:
       enabled: true

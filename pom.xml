@@ -8,11 +8,11 @@
 		<version>2.1.4.RELEASE</version>
 		<relativePath/>
 	</parent>
-	<groupId>top.cfl</groupId>
-	<artifactId>picture</artifactId>
+	<groupId>icu.reol</groupId>
+	<artifactId>moyu</artifactId>
 	<version>1.0</version>
-	<name>picture</name>
-	<description>图片管理系统</description>
+	<name>moyu</name>
+	<description>JustMoyu</description>
 
 	<properties>
 		<java.version>1.8</java.version>
