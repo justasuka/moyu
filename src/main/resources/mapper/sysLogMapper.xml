@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.SysLogDao">
+    <!--########################################################generated code start,do not update################################################################-->
+    <sql id="projection">
+        <choose>
+             <when test="pager!=null and pager.includes!=null">
+                 <foreach collection="pager.includes" item="field" separator=",">
+                     T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                 </foreach>
+             </when>
+             <when test="pager!=null and pager.excludes!=null">
+                 <trim suffixOverrides=",">
+                         <if test="!pager.excludes.contains('id')">
+                             T.id,
+                         </if>
+                         <if test="!pager.excludes.contains('userId')">
+                             T.user_id,
+                         </if>
+                         <if test="!pager.excludes.contains('username')">
+                             T.username,
+                         </if>
+                         <if test="!pager.excludes.contains('operation')">
+                             T.operation,
+                         </if>
+                         <if test="!pager.excludes.contains('time')">
+                             T.time,
+                         </if>
+                         <if test="!pager.excludes.contains('method')">
+                             T.method,
+                         </if>
+                         <if test="!pager.excludes.contains('params')">
+                             T.params,
+                         </if>
+                         <if test="!pager.excludes.contains('ip')">
+                             T.ip,
+                         </if>
+                         <if test="!pager.excludes.contains('createTime')">
+                             T.create_time,
+                         </if>
+                 </trim>
+             </when>
+             <otherwise>
+                 T.*
+             </otherwise>
+         </choose>
+    </sql>
+    <sql id="match">
+        <where>
+              <if test="id!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='id'">
+                             T.id like concat('%',#{id},'%')
+                         </when>
+                         <otherwise>
+                             T.id=#{id}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="userId!=null">
+                    and T.user_id=#{userId}
+              </if>
+              <if test="username!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='username'">
+                            and T.username like concat('%',#{username},'%')
+                         </when>
+                         <otherwise>
+                            and T.username=#{username}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="operation!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='operation'">
+                            and T.operation like concat('%',#{operation},'%')
+                         </when>
+                         <otherwise>
+                            and T.operation=#{operation}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="time!=null">
+                    and T.time=#{time}
+              </if>
+              <if test="method!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='method'">
+                            and T.method like concat('%',#{method},'%')
+                         </when>
+                         <otherwise>
+                            and T.method=#{method}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="params!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='params'">
+                            and T.params like concat('%',#{params},'%')
+                         </when>
+                         <otherwise>
+                            and T.params=#{params}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="ip!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='ip'">
+                            and T.ip like concat('%',#{ip},'%')
+                         </when>
+                         <otherwise>
+                            and T.ip=#{ip}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="createTime!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='createTime'">
+                            and T.create_time like concat('%',#{createTime},'%')
+                         </when>
+                         <otherwise>
+                            and T.create_time=#{createTime}
+                         </otherwise>
+                      </choose>
+              </if>
+            <if test="pager!=null and pager.rangeField!=null and pager.rangeArray!=null and pager.rangeArray.length==2">
+                <foreach collection="pager.rangeArray" item="item"  index="i">
+                    <if test="i==0 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &gt;= #{item}
+                    </if>
+                    <if test="i==1 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &lt;= #{item}
+                    </if>
+                </foreach>
+
+            </if>
+        </where>
+    </sql>
+    <sql id="sort">
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by
+            <foreach collection="pager.sortField.split(',')" item="s" index="i" separator=",">
+                T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(s)} ${pager.sortOrder.split(',')[i]}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="page">
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </sql>
+
+
+    <select id="findSysLogListByCondition" parameterType="top.cfl.cflwork.pojo.SysLog" resultType="top.cfl.cflwork.pojo.SysLog">
+        select
+         <include refid="projection"/>
+         from sys_log T
+         <include refid="match"/>
+         <include refid="sort"/>
+         <include refid="page"/>
+
+
+    </select>
+    <select id="findSysLogCountByCondition" parameterType="top.cfl.cflwork.pojo.SysLog" resultType="long">
+        select count(*) from sys_log T
+        <include refid="match"/>
+    </select>
+    <select id="findSysLogById" resultType="top.cfl.cflwork.pojo.SysLog">
+        select * from sys_log where id=#{id}
+    </select>
+    <select id="findOneSysLogByCondition" parameterType="top.cfl.cflwork.pojo.SysLog" resultType="top.cfl.cflwork.pojo.SysLog">
+        select
+         <include refid="projection"/>
+         from sys_log T
+        <include refid="match"/>
+    </select>
+    <insert id="saveSysLog" parameterType="top.cfl.cflwork.pojo.SysLog">
+        insert into sys_log
+         (
+            id,
+            user_id,
+            username,
+            operation,
+            time,
+            method,
+            params,
+            ip,
+            create_time
+        ) values
+         (
+                #{id}
+                ,
+                #{userId}
+                ,
+                #{username}
+                ,
+                #{operation}
+                ,
+                #{time}
+                ,
+                #{method}
+                ,
+                #{params}
+                ,
+                #{ip}
+                ,
+                now()
+                
+         )
+    </insert>
+    <update id="updateSysLog" parameterType="top.cfl.cflwork.pojo.SysLog">
+        update sys_log
+        <set>
+                    <if test="userId!=null ">
+                        user_id=#{userId},
+                    </if>
+                    <if test="username!=null ">
+                        username=#{username},
+                    </if>
+                    <if test="operation!=null ">
+                        operation=#{operation},
+                    </if>
+                    <if test="time!=null ">
+                        time=#{time},
+                    </if>
+                    <if test="method!=null ">
+                        method=#{method},
+                    </if>
+                    <if test="params!=null ">
+                        params=#{params},
+                    </if>
+                    <if test="ip!=null ">
+                        ip=#{ip},
+                    </if>
+                    <if test="createTime!=null ">
+                        create_time=#{createTime}
+                    </if>
+          </set>
+         where id=#{id}
+    </update>
+    <delete id="deleteSysLog" >
+        delete from sys_log where id=#{id}
+    </delete>
+    <delete id="deleteSysLogByCondition" >
+        delete T from sys_log T
+        <include refid="match"/>
+    </delete>
+    <insert id="batchSaveSysLog" parameterType="top.cfl.cflwork.pojo.SysLog">
+        INSERT INTO sys_log (  id,  user_id,  username,  operation,  time,  method,  params,  ip,  create_time )
+        VALUES
+        <foreach collection="list" item="sysLog" separator=",">
+            (  #{sysLog.id},  #{sysLog.userId},  #{sysLog.username},  #{sysLog.operation},  #{sysLog.time},  #{sysLog.method},  #{sysLog.params},  #{sysLog.ip},  #{sysLog.createTime}  )
+        </foreach>
+    </insert>
+    <!--##################################################generated code end,do not update######################################################################-->
+    <delete id="deleteManySysLog" >
+        delete from sys_log where date(date_sub(now(),interval 15 day))>=date(create_time)
+    </delete>
+
+
+</mapper>

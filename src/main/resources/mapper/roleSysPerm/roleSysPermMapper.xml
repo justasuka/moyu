@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.admin.roleSysPerm.RoleSysPermDao">
+    <!--########################################################################################################################-->
+    <select id="findRoleSysPermListByCondition" parameterType="RoleSysPerm" resultType="RoleSysPerm">
+        select
+         <choose>
+             <when test="pager!=null and pager.includes!=null">
+                 <foreach collection="includes" item="field" separator=",">
+                     T.${field}
+                 </foreach>
+             </when>
+             <when test="pager!=null and pager.excludes!=null">
+                 <trim suffixOverrides=",">
+                         <if test="!excludes.contains('id')">
+                             T.id,
+                         </if>
+                         <if test="!excludes.contains('roleId')">
+                             T.role_id,
+                         </if>
+                         <if test="!excludes.contains('permId')">
+                             T.perm_id,
+                         </if>
+                 </trim>
+             </when>
+             <otherwise>
+                 T.*
+             </otherwise>
+         </choose>
+         from role_perm T
+        <where>
+              <if test="roleId!=null">
+                 T.role_id=#{roleId}
+              </if>
+              <if test="permId!=null">
+                and T.perm_id=#{permId}
+              </if>
+
+        </where>
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.sortField)} ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.sortOrder)}
+        </if>
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </select>
+    <select id="findRoleSysPermCountByCondition" parameterType="RoleSysPerm" resultType="long">
+        select count(*) from role_perm
+        <where>
+              <if test="roleId!=null">
+                 role_id=#{roleId}
+              </if>
+              <if test="permId!=null">
+                and perm_id=#{permId}
+              </if>
+        </where>
+    </select>
+    <select id="findRoleSysPermById" resultType="RoleSysPerm">
+        select * from role_perm where id=#{0}
+    </select>
+    <insert id="saveRoleSysPerm" parameterType="RoleSysPerm" useGeneratedKeys="true" keyProperty="id">
+        insert into role_perm
+         (
+            id,
+            role_id,
+            perm_id
+        ) values
+         (
+                #{id}
+                ,
+                #{roleId}
+                ,
+                #{permId}
+                
+         )
+    </insert>
+    <update id="updateRoleSysPerm" parameterType="RoleSysPerm">
+        update role_perm
+        <set>
+                    <if test="roleId!=null ">
+                        role_id=#{roleId},
+                    </if>
+
+
+                    <if test="permId!=null ">
+                        perm_id=#{permId}
+                    </if>
+
+
+          </set>
+         where id=#{id}
+    </update>
+    <delete id="deleteRoleSysPerm" >
+        delete from role_perm where id=#{0}
+    </delete>
+    <insert id="batchSaveRoleSysPerm" parameterType="RoleSysPerm" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO role_perm (
+                id,
+                role_id,
+                perm_id
+        )
+        VALUES
+        <foreach collection="list" item="roleSysPerm" separator=",">
+            (
+                #{roleSysPerm.id},
+                #{roleSysPerm.roleId},
+                #{roleSysPerm.permId}
+            )
+        </foreach>
+
+    </insert>
+    <!--########################################################################################################################-->
+    <delete id="deleteRoleSysPermByRoleId">
+        delete from role_perm where role_id=#{roleId}
+    </delete>
+    <delete id="deleteRoleSysPermByPermId">
+        delete from role_perm where perm_id=#{permId}
+    </delete>
+
+</mapper>

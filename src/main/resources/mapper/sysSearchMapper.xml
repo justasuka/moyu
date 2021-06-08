@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.SysSearchDao">
+    <!--########################################################generated code start,do not update################################################################-->
+    <sql id="projection">
+        <choose>
+             <when test="pager!=null and pager.includes!=null">
+                 <foreach collection="pager.includes" item="field" separator=",">
+                     T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                 </foreach>
+             </when>
+             <when test="pager!=null and pager.excludes!=null">
+                 <trim suffixOverrides=",">
+                         <if test="!pager.excludes.contains('id')">
+                             T.id,
+                         </if>
+                         <if test="!pager.excludes.contains('searchContent')">
+                             T.search_content,
+                         </if>
+                         <if test="!pager.excludes.contains('count')">
+                             T.count,
+                         </if>
+                         <if test="!pager.excludes.contains('adminId')">
+                             T.admin_id,
+                         </if>
+                         <if test="!pager.excludes.contains('adminName')">
+                             T.admin_name,
+                         </if>
+                         <if test="!pager.excludes.contains('createTime')">
+                             T.create_time,
+                         </if>
+                 </trim>
+             </when>
+             <otherwise>
+                 T.*
+             </otherwise>
+         </choose>
+    </sql>
+    <sql id="match">
+        <where>
+              <if test="id!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('id')">
+                            <trim suffixOverrides=",">
+                                 T.id like concat('%',#{id},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                             T.id=#{id}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="searchContent!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('searchContent')">
+                            <trim suffixOverrides=",">
+                                and T.search_content like concat('%',#{searchContent},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.search_content=#{searchContent}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="count!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('count')">
+                            <trim suffixOverrides=",">
+                                and T.count like concat('%',#{count},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.count=#{count}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="adminId!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('adminId')">
+                            <trim suffixOverrides=",">
+                                and T.admin_id like concat('%',#{adminId},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.admin_id=#{adminId}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="adminName!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('adminName')">
+                            <trim suffixOverrides=",">
+                                and T.admin_name like concat('%',#{adminName},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.admin_name=#{adminName}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="createTime!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('createTime')">
+                            <trim suffixOverrides=",">
+                                and T.create_time like concat('%',#{createTime},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.create_time=#{createTime}
+                         </otherwise>
+                      </choose>
+              </if>
+            <if test="pager!=null and pager.rangeField!=null and pager.rangeArray!=null and pager.rangeArray.length==2">
+                <foreach collection="pager.rangeArray" item="item"  index="i">
+                    <if test="i==0 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &gt;= #{item}
+                    </if>
+                    <if test="i==1 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &lt;= #{item}
+                    </if>
+                </foreach>
+
+            </if>
+        </where>
+    </sql>
+    <sql id="sort">
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by
+            <foreach collection="pager.sortField.split(',')" item="s" index="i" separator=",">
+                T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(s)} ${pager.sortOrder.split(',')[i]}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="page">
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </sql>
+
+
+    <select id="findSysSearchListByCondition" parameterType="SysSearch" resultType="SysSearch">
+        select
+         <include refid="projection"/>
+         from sys_search T
+         <include refid="match"/>
+         <include refid="sort"/>
+         <include refid="page"/>
+    </select>
+
+    <select id="findSysSearchAllList" parameterType="SysSearch" resultType="SysSearch">
+            select
+             <include refid="projection"/>
+             from sys_search T
+             <include refid="match"/>
+             <include refid="sort"/>
+        </select>
+
+    <select id="findSysSearchCountByCondition" parameterType="SysSearch" resultType="long">
+        select count(*) from sys_search T
+        <include refid="match"/>
+    </select>
+    <select id="findSysSearchById" resultType="SysSearch">
+        select * from sys_search where id=#{id}
+    </select>
+    <select id="findOneSysSearchByCondition" parameterType="SysSearch" resultType="SysSearch">
+        select
+         <include refid="projection"/>
+         from sys_search T
+        <include refid="match"/>
+    </select>
+    <insert id="saveSysSearch" parameterType="SysSearch">
+        insert into sys_search
+         (
+            id,
+            search_content,
+            count,
+            admin_id,
+            admin_name,
+            create_time
+        ) values
+         (
+                #{id}
+                ,
+                #{searchContent}
+                ,
+                #{count}
+                ,
+                #{adminId}
+                ,
+                #{adminName}
+                ,
+                now()
+                
+         )
+    </insert>
+    <update id="updateSysSearch" parameterType="SysSearch">
+        update sys_search
+        <set>
+                    <if test="searchContent!=null ">
+                        search_content=#{searchContent},
+                    </if>
+                    <if test="count!=null ">
+                        count=#{count},
+                    </if>
+                    <if test="adminId!=null ">
+                        admin_id=#{adminId},
+                    </if>
+                    <if test="adminName!=null ">
+                        admin_name=#{adminName},
+                    </if>
+                    <if test="createTime!=null ">
+                        create_time=#{createTime}
+                    </if>
+          </set>
+         where id=#{id}
+    </update>
+    <delete id="deleteSysSearch" >
+        delete from sys_search where id=#{id}
+    </delete>
+    <delete id="deleteSysSearchByCondition" >
+        delete T from sys_search T
+        <include refid="match"/>
+    </delete>
+    <insert id="batchSaveSysSearch" parameterType="SysSearch">
+        INSERT INTO sys_search (  id,  search_content,  count,  admin_id,  admin_name,  create_time )
+        VALUES
+        <foreach collection="list" item="sysSearch" separator=",">
+            (  #{sysSearch.id},  #{sysSearch.searchContent},  #{sysSearch.count},  #{sysSearch.adminId},  #{sysSearch.adminName},  #{sysSearch.createTime}  )
+        </foreach>
+    </insert>
+    <delete id="batchDeleteSysSearch" parameterType="string">
+        delete from sys_search where id in
+        <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+            #{rowData}
+        </foreach>
+    </delete>
+    <update id="batchUpdateSysSearch" parameterType="SysSearch">
+        update sys_search
+        <set>
+                    <if test="searchContent!=null ">
+                        search_content=#{searchContent},
+                    </if>
+                    <if test="count!=null ">
+                        count=#{count},
+                    </if>
+                    <if test="adminId!=null ">
+                        admin_id=#{adminId},
+                    </if>
+                    <if test="adminName!=null ">
+                        admin_name=#{adminName},
+                    </if>
+                    <if test="createTime!=null ">
+                        create_time=#{createTime}
+                    </if>
+          </set>
+         where id in
+           <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+               #{rowData}
+           </foreach>
+    </update>
+    <select id="getSysSearchTableField" resultType="ExcelExport">
+            select column_name as 'key',column_comment as 'name' from information_schema.columns where table_name='sys_search'
+            <!--####### 如果有多个数据库的表一致的情况下，需要加上此标签，例如 archives and table_schema = 'archives' #########-->
+        </select>
+    <!--##################################################generated code end,do not update######################################################################-->
+    <select id="findSysSearchRecentlyList"  resultType="SysSearch">
+        SELECT search_content,sum(count) count FROM `sys_search` group by search_content  ORDER BY count desc LIMIT 3
+    </select>
+
+</mapper>

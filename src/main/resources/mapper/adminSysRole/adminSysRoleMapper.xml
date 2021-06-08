@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.admin.adminSysRole.AdminSysRoleDao">
+    <!--########################################################################################################################-->
+    <select id="findAdminSysRoleListByCondition" parameterType="AdminSysRole" resultType="AdminSysRole">
+        select
+        <choose>
+            <when test="pager!=null and pager.includes!=null">
+                <foreach collection="pager.includes" item="field" separator=",">
+                    T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                </foreach>
+            </when>
+            <when test="pager!=null and pager.excludes!=null">
+                <trim suffixOverrides=",">
+                    <if test="!pager.excludes.contains('id')">
+                        T.id,
+                    </if>
+                    <if test="!pager.excludes.contains('adminId')">
+                        T.admin_id,
+                    </if>
+                    <if test="!pager.excludes.contains('roleId')">
+                        T.role_id,
+                    </if>
+                </trim>
+            </when>
+            <otherwise>
+                T.*
+            </otherwise>
+        </choose>
+        from admin_role T
+        <where>
+            <if test="adminId!=null">
+                T.admin_id=#{adminId}
+            </if>
+            <if test="roleId!=null">
+                and T.role_id=#{roleId}
+            </if>
+
+        </where>
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.sortField)} ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.sortOrder)}
+        </if>
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </select>
+    <select id="findAdminSysRoleCountByCondition" parameterType="AdminSysRole" resultType="long">
+        select count(*) from admin_role
+        <where>
+            <if test="adminId!=null">
+                admin_id=#{adminId}
+            </if>
+            <if test="roleId!=null">
+                and role_id=#{roleId}
+            </if>
+        </where>
+    </select>
+    <select id="findAdminSysRoleById" resultType="AdminSysRole">
+        select * from admin_role where id=#{id}
+    </select>
+    <select id="findOneAdminSysRoleByCondition" parameterType="AdminSysRole" resultType="AdminSysRole">
+        select
+        <choose>
+            <when test="pager!=null and pager.includes!=null">
+                <foreach collection="pager.includes" item="field" separator=",">
+                    T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                </foreach>
+            </when>
+            <when test="pager!=null and pager.excludes!=null">
+                <trim suffixOverrides=",">
+                    <if test="!pager.excludes.contains('id')">
+                        T.id,
+                    </if>
+                    <if test="!pager.excludes.contains('adminId')">
+                        T.admin_id,
+                    </if>
+                    <if test="!pager.excludes.contains('roleId')">
+                        T.role_id,
+                    </if>
+                </trim>
+            </when>
+            <otherwise>
+                T.*
+            </otherwise>
+        </choose>
+        from admin_role T
+        <where>
+            <if test="adminId!=null">
+                T.admin_id=#{adminId}
+            </if>
+            <if test="roleId!=null">
+                and T.role_id=#{roleId}
+            </if>
+        </where>
+    </select>
+    <insert id="saveAdminSysRole" parameterType="AdminSysRole" useGeneratedKeys="true" keyProperty="id">
+        insert into admin_role
+         (
+            id,
+            admin_id,
+            role_id
+        ) values
+         (
+                #{id}
+                ,
+                #{adminId}
+                ,
+                #{roleId}
+
+         )
+    </insert>
+    <update id="updateAdminSysRole" parameterType="AdminSysRole">
+        update admin_role
+        <set>
+            <if test="adminId!=null ">
+                admin_id=#{adminId},
+            </if>
+            <if test="roleId!=null ">
+                role_id=#{roleId}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteAdminSysRole" >
+        delete from admin_role where id=#{id}
+    </delete>
+    <delete id="deleteAdminSysRoleByCondition" >
+        delete from admin_role
+        <where>
+            <if test="id!=null">
+                id=#{id}
+            </if>
+            <if test="adminId!=null">
+                and admin_id=#{adminId}
+            </if>
+            <if test="roleId!=null">
+                and role_id=#{roleId}
+            </if>
+        </where>
+    </delete>
+    <insert id="batchSaveAdminSysRole" parameterType="AdminSysRole" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO admin_role (  id,  admin_id,  role_id )
+        VALUES
+        <foreach collection="list" item="adminSysRole" separator=",">
+            (  #{adminSysRole.id},  #{adminSysRole.adminId},  #{adminSysRole.roleId}  )
+        </foreach>
+    </insert>
+    <!--########################################################################################################################-->
+    <delete id="deleteAdminSysRoleByAdminId">
+        delete from admin_role where admin_id=#{adminId}
+    </delete>
+    <delete id="deleteAdminSysRoleByRoleId">
+        delete from admin_role where role_id=#{roleId}
+    </delete>
+
+
+</mapper>

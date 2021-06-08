@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.admin.sysRole.SysRoleDao">
+    <!--########################################################generated code start,do not update################################################################-->
+    <sql id="projection">
+        <choose>
+            <when test="pager!=null and pager.includes!=null">
+                <foreach collection="pager.includes" item="field" separator=",">
+                    T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                </foreach>
+            </when>
+            <when test="pager!=null and pager.excludes!=null">
+                <trim suffixOverrides=",">
+                    <if test="!pager.excludes.contains('id')">
+                        T.id,
+                    </if>
+                    <if test="!pager.excludes.contains('title')">
+                        T.title,
+                    </if>
+                    <if test="!pager.excludes.contains('remark')">
+                        T.remark,
+                    </if>
+                    <if test="!pager.excludes.contains('createTime')">
+                        T.create_time,
+                    </if>
+                    <if test="!pager.excludes.contains('updateTime')">
+                        T.update_time,
+                    </if>
+                </trim>
+            </when>
+            <otherwise>
+                T.*
+            </otherwise>
+        </choose>
+    </sql>
+    <sql id="match">
+        <where>
+            <if test="id!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('id')">
+                        <trim suffixOverrides=",">
+                            T.id like concat('%',#{id},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        T.id=#{id}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="title!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('title')">
+                        <trim suffixOverrides=",">
+                            and T.title like concat('%',#{title},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.title=#{title}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="remark!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('remark')">
+                        <trim suffixOverrides=",">
+                            and T.remark like concat('%',#{remark},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.remark=#{remark}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="createTime!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('createTime')">
+                        <trim suffixOverrides=",">
+                            and T.create_time like concat('%',#{createTime},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.create_time=#{createTime}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="updateTime!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('updateTime')">
+                        <trim suffixOverrides=",">
+                            and T.update_time like concat('%',#{updateTime},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.update_time=#{updateTime}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="pager!=null and pager.rangeField!=null and pager.rangeArray!=null and pager.rangeArray.length==2">
+                <foreach collection="pager.rangeArray" item="item"  index="i">
+                    <if test="i==0 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &gt;= #{item}
+                    </if>
+                    <if test="i==1 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &lt;= #{item}
+                    </if>
+                </foreach>
+
+            </if>
+        </where>
+    </sql>
+    <sql id="sort">
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by
+            <foreach collection="pager.sortField.split(',')" item="s" index="i" separator=",">
+                T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(s)} ${pager.sortOrder.split(',')[i]}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="page">
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </sql>
+
+
+    <select id="findSysRoleListByCondition" parameterType="top.cfl.cflwork.pojo.admin.SysRole" resultType="top.cfl.cflwork.pojo.admin.SysRole">
+        select
+        <include refid="projection"/>
+        from sys_role T
+        <include refid="match"/>
+        <include refid="sort"/>
+        <include refid="page"/>
+
+
+    </select>
+    <select id="findSysRoleCountByCondition" parameterType="top.cfl.cflwork.pojo.admin.SysRole" resultType="long">
+        select count(*) from sys_role T
+        <include refid="match"/>
+    </select>
+    <select id="findSysRoleById" resultType="top.cfl.cflwork.pojo.admin.SysRole">
+        select * from sys_role where id=#{id}
+    </select>
+    <select id="findOneSysRoleByCondition" parameterType="top.cfl.cflwork.pojo.admin.SysRole" resultType="top.cfl.cflwork.pojo.admin.SysRole">
+        select
+        <include refid="projection"/>
+        from sys_role T
+        <include refid="match"/>
+    </select>
+    <insert id="saveSysRole" parameterType="top.cfl.cflwork.pojo.admin.SysRole">
+        insert into sys_role
+        (
+        id,
+        title,
+        remark,
+        create_time,
+        update_time
+        ) values
+        (
+        #{id}
+        ,
+        #{title}
+        ,
+        #{remark}
+        ,
+        now()
+        ,
+        #{updateTime}
+
+        )
+    </insert>
+    <update id="updateSysRole" parameterType="top.cfl.cflwork.pojo.admin.SysRole">
+        update sys_role
+        <set>
+            <if test="title!=null ">
+                title=#{title},
+            </if>
+            <if test="remark!=null ">
+                remark=#{remark},
+            </if>
+            <if test="createTime!=null ">
+                create_time=#{createTime},
+            </if>
+            update_time=now()
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteSysRole" >
+        delete from sys_role where id=#{id}
+    </delete>
+    <delete id="deleteSysRoleByCondition" >
+        delete T from sys_role T
+        <include refid="match"/>
+    </delete>
+    <insert id="batchSaveSysRole" parameterType="top.cfl.cflwork.pojo.admin.SysRole">
+        INSERT INTO sys_role (  id,  title,  remark,  create_time,  update_time )
+        VALUES
+        <foreach collection="list" item="sysRole" separator=",">
+            (  #{sysRole.id},  #{sysRole.title},  #{sysRole.remark},  #{sysRole.createTime},  #{sysRole.updateTime}  )
+        </foreach>
+    </insert>
+    <!--##################################################generated code end,do not update######################################################################-->
+    <select id="findRoleByAdminId" resultType="top.cfl.cflwork.pojo.admin.SysRole">
+        select * from sys_role T1 left join admin_role T2 on T1.id=T2.role_id  where T2.admin_id=#{adminId}
+    </select>
+</mapper>

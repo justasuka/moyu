@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.SysDepartmentDao">
+    <!--########################################################generated code start,do not update################################################################-->
+    <sql id="projection">
+        <choose>
+            <when test="pager!=null and pager.includes!=null">
+                <foreach collection="pager.includes" item="field" separator=",">
+                    T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                </foreach>
+            </when>
+            <when test="pager!=null and pager.excludes!=null">
+                <trim suffixOverrides=",">
+                    <if test="!pager.excludes.contains('id')">
+                        T.id,
+                    </if>
+                    <if test="!pager.excludes.contains('name')">
+                        T.name,
+                    </if>
+                    <if test="!pager.excludes.contains('parentId')">
+                        T.parent_id,
+                    </if>
+                    <if test="!pager.excludes.contains('sort')">
+                        T.sort,
+                    </if>
+                    <if test="!pager.excludes.contains('createTime')">
+                        T.create_time,
+                    </if>
+                    <if test="!pager.excludes.contains('updateTime')">
+                        T.update_time,
+                    </if>
+                    <if test="!pager.excludes.contains('adminId')">
+                        T.admin_id,
+                    </if>
+                    <if test="!pager.excludes.contains('adminName')">
+                        T.admin_name,
+                    </if>
+                </trim>
+            </when>
+            <otherwise>
+                T.*
+            </otherwise>
+        </choose>
+    </sql>
+    <sql id="match">
+        <where>
+            <if test="id!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('id')">
+                        <trim suffixOverrides=",">
+                            T.id like concat('%',#{id},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        T.id=#{id}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="name!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('name')">
+                        <trim suffixOverrides=",">
+                            and T.name like concat('%',#{name},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.name=#{name}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="parentId!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('parentId')">
+                        <trim suffixOverrides=",">
+                            and T.parent_id like concat('%',#{parentId},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.parent_id=#{parentId}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="sort!=null">
+                and T.sort=#{sort}
+            </if>
+            <if test="createTime!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('createTime')">
+                        <trim suffixOverrides=",">
+                            and T.create_time like concat('%',#{createTime},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.create_time=#{createTime}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="updateTime!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('updateTime')">
+                        <trim suffixOverrides=",">
+                            and T.update_time like concat('%',#{updateTime},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.update_time=#{updateTime}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="adminId!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('adminId')">
+                        <trim suffixOverrides=",">
+                            and T.admin_id like concat('%',#{adminId},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.admin_id=#{adminId}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="adminName!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('adminName')">
+                        <trim suffixOverrides=",">
+                            and T.admin_name like concat('%',#{adminName},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.admin_name=#{adminName}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="pager!=null and pager.rangeField!=null and pager.rangeArray!=null and pager.rangeArray.length==2">
+                <foreach collection="pager.rangeArray" item="item"  index="i">
+                    <if test="i==0 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &gt;= #{item}
+                    </if>
+                    <if test="i==1 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &lt;= #{item}
+                    </if>
+                </foreach>
+
+            </if>
+        </where>
+    </sql>
+    <sql id="sort">
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by
+            <foreach collection="pager.sortField.split(',')" item="s" index="i" separator=",">
+                T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(s)} ${pager.sortOrder.split(',')[i]}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="page">
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </sql>
+
+
+    <select id="findSysDepartmentListByCondition" parameterType="SysDepartment" resultType="SysDepartment">
+        select
+        <include refid="projection"/>
+        from sys_department T
+        <include refid="match"/>
+        <include refid="sort"/>
+        <include refid="page"/>
+    </select>
+
+    <select id="findSysDepartmentAllList" parameterType="SysDepartment" resultType="SysDepartment">
+        select
+        <include refid="projection"/>
+        from sys_department T
+        <include refid="match"/>
+        <include refid="sort"/>
+    </select>
+
+    <select id="findSysDepartmentCountByCondition" parameterType="SysDepartment" resultType="long">
+        select count(*) from sys_department T
+        <include refid="match"/>
+    </select>
+    <select id="findSysDepartmentById" resultType="SysDepartment">
+        select * from sys_department where id=#{id}
+    </select>
+    <select id="findOneSysDepartmentByCondition" parameterType="SysDepartment" resultType="SysDepartment">
+        select
+        <include refid="projection"/>
+        from sys_department T
+        <include refid="match"/>
+    </select>
+    <insert id="saveSysDepartment" parameterType="SysDepartment">
+        insert into sys_department
+        (
+        id,
+        name,
+        parent_id,
+        sort,
+        create_time,
+        update_time,
+        admin_id,
+        admin_name
+        ) values
+        (
+        #{id}
+        ,
+        #{name}
+        ,
+        #{parentId}
+        ,
+        #{sort}
+        ,
+        now()
+        ,
+        #{updateTime}
+        ,
+        #{adminId}
+        ,
+        #{adminName}
+
+        )
+    </insert>
+    <update id="updateSysDepartment" parameterType="SysDepartment">
+        update sys_department
+        <set>
+            <if test="name!=null ">
+                name=#{name},
+            </if>
+            <if test="parentId!=null ">
+                parent_id=#{parentId},
+            </if>
+            <if test="sort!=null ">
+                sort=#{sort},
+            </if>
+            <if test="createTime!=null ">
+                create_time=#{createTime},
+            </if>
+            update_time=now(),
+            <if test="adminId!=null ">
+                admin_id=#{adminId},
+            </if>
+            <if test="adminName!=null ">
+                admin_name=#{adminName}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteSysDepartment" >
+        delete from sys_department where id=#{id}
+    </delete>
+    <delete id="deleteSysDepartmentByCondition" >
+        delete T from sys_department T
+        <include refid="match"/>
+    </delete>
+    <insert id="batchSaveSysDepartment" parameterType="SysDepartment">
+        INSERT INTO sys_department (  id,  name,  parent_id,  sort,  create_time,  update_time,  admin_id,  admin_name )
+        VALUES
+        <foreach collection="list" item="sysDepartment" separator=",">
+            (  #{sysDepartment.id},  #{sysDepartment.name},  #{sysDepartment.parentId},  #{sysDepartment.sort},  #{sysDepartment.createTime},  #{sysDepartment.updateTime},  #{sysDepartment.adminId},  #{sysDepartment.adminName}  )
+        </foreach>
+    </insert>
+    <delete id="batchDeleteSysDepartment" parameterType="string">
+        delete from sys_department where id in
+        <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+            #{rowData}
+        </foreach>
+    </delete>
+    <update id="batchUpdateSysDepartment" parameterType="SysDepartment">
+        update sys_department
+        <set>
+            <if test="name!=null ">
+                name=#{name},
+            </if>
+            <if test="parentId!=null ">
+                parent_id=#{parentId},
+            </if>
+            <if test="sort!=null ">
+                sort=#{sort},
+            </if>
+            <if test="createTime!=null ">
+                create_time=#{createTime},
+            </if>
+            update_time=now(),
+            <if test="adminId!=null ">
+                admin_id=#{adminId},
+            </if>
+            <if test="adminName!=null ">
+                admin_name=#{adminName}
+            </if>
+        </set>
+        where id in
+        <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+            #{rowData}
+        </foreach>
+    </update>
+    <select id="getSysDepartmentTableField" resultType="ExcelExport">
+        select column_name as 'key',column_comment as 'name' from information_schema.columns where table_name='sys_department'
+        <!--####### 如果有多个数据库的表一致的情况下，需要加上此标签，例如 archives and table_schema = 'archives' #########-->
+    </select>
+    <!--##################################################generated code end,do not update######################################################################-->
+    <select id="findSysDepartmentByPId" resultType="SysDepartment">
+        select * from sys_department where  parent_id=#{id}
+    </select>
+    <select id="findSysDepartmentNoParentAllList" resultType="SysDepartment">
+        select * from sys_department where  parent_id != '-1'
+    </select>
+    <select id="findSysDepartmentAllListByDep" parameterType="SysDepartment" resultType="SysDepartment">
+        select
+        <include refid="projection"/>,count(a.id) as number
+        from sys_department T
+        left join admin a on a.department_id = T.id
+        GROUP BY T.id
+        <include refid="match"/>
+        <include refid="sort"/>
+    </select>
+    <select id="findSysDepartmentListByIds" parameterType="SysDepartment" resultType="SysDepartment">
+        drop temporary table if exists sys_department_tmp;
+        create temporary table sys_department_tmp select * from sys_department where id in
+        <foreach item="rowD" collection="rowData" open="(" separator="," close=")">
+            #{rowD}
+        </foreach>
+        ;select * from sys_department a WHERE exists(select 1 from sys_department_tmp b where b.id=a.id or b.parent_id=a.id);
+    </select>
+</mapper>

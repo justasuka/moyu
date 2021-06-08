@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.dd.SysDdDao">
+    <!--########################################################generated code start,do not update################################################################-->
+    <sql id="projection">
+        <choose>
+             <when test="pager!=null and pager.includes!=null">
+                 <foreach collection="pager.includes" item="field" separator=",">
+                     T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                 </foreach>
+             </when>
+             <when test="pager!=null and pager.excludes!=null">
+                 <trim suffixOverrides=",">
+                         <if test="!pager.excludes.contains('id')">
+                             T.id,
+                         </if>
+                         <if test="!pager.excludes.contains('name')">
+                             T.name,
+                         </if>
+                         <if test="!pager.excludes.contains('remark')">
+                             T.remark,
+                         </if>
+                         <if test="!pager.excludes.contains('typeCode')">
+                             T.type_code,
+                         </if>
+                         <if test="!pager.excludes.contains('createTime')">
+                             T.create_time,
+                         </if>
+                         <if test="!pager.excludes.contains('updateTime')">
+                             T.update_time,
+                         </if>
+                 </trim>
+             </when>
+             <otherwise>
+                 T.*,d.name as 'typeName'
+             </otherwise>
+         </choose>
+    </sql>
+    <sql id="match">
+        <where>
+              <if test="id!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('id')">
+                            <trim suffixOverrides=",">
+                                 T.id like concat('%',#{id},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                             T.id=#{id}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="name!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('name')">
+                            <trim suffixOverrides=",">
+                                and T.name like concat('%',#{name},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.name=#{name}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="remark!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('remark')">
+                            <trim suffixOverrides=",">
+                                and T.remark like concat('%',#{remark},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.remark=#{remark}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="typeCode!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('typeCode')">
+                            <trim suffixOverrides=",">
+                                and T.type_code like concat('%',#{typeCode},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.type_code=#{typeCode}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="createTime!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('createTime')">
+                            <trim suffixOverrides=",">
+                                and T.create_time like concat('%',#{createTime},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.create_time=#{createTime}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="updateTime!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like!=null and pager.like.contains('updateTime')">
+                            <trim suffixOverrides=",">
+                                and T.update_time like concat('%',#{updateTime},'%')
+                            </trim>
+                         </when>
+                         <otherwise>
+                            and T.update_time=#{updateTime}
+                         </otherwise>
+                      </choose>
+              </if>
+            <if test="pager!=null and pager.rangeField!=null and pager.rangeArray!=null and pager.rangeArray.length==2">
+                <foreach collection="pager.rangeArray" item="item"  index="i">
+                    <if test="i==0 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &gt;= #{item}
+                    </if>
+                    <if test="i==1 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &lt;= #{item}
+                    </if>
+                </foreach>
+
+            </if>
+        </where>
+    </sql>
+    <sql id="sort">
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by
+            <foreach collection="pager.sortField.split(',')" item="s" index="i" separator=",">
+                T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(s)} ${pager.sortOrder.split(',')[i]}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="page">
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </sql>
+
+
+    <select id="findSysDdListByCondition" parameterType="SysDd" resultType="SysDd">
+        select
+         <include refid="projection"/>
+         from sys_dd T left join sys_ddtype d on T.type_code = d.code
+         <include refid="match"/>
+         <include refid="sort"/>
+         <include refid="page"/>
+    </select>
+
+    <select id="findSysDdAllList" parameterType="SysDd" resultType="SysDd">
+            select
+             <include refid="projection"/>
+             from sys_dd T left join sys_ddtype d on T.type_code = d.code
+             <include refid="match"/>
+             <include refid="sort"/>
+        </select>
+
+    <select id="findSysDdCountByCondition" parameterType="top.cfl.cflwork.pojo.dd.SysDd" resultType="long">
+        select count(*) from sys_dd T left join sys_ddtype d on T.type_code = d.code
+        <include refid="match"/>
+    </select>
+    <select id="findSysDdById" resultType="SysDd">
+        select T.*,d.name as 'typeName' from sys_dd T left join sys_ddtype d on T.type_code = d.code where T.id=#{id}
+    </select>
+    <select id="findOneSysDdByCondition" parameterType="SysDd" resultType="SysDd">
+        select
+         <include refid="projection"/>
+         from sys_dd T left join sys_ddtype d on T.type_code = d.code
+        <include refid="match"/>
+    </select>
+    <insert id="saveSysDd" parameterType="SysDd">
+        insert into sys_dd
+         (
+            id,
+            name,
+            remark,
+            type_code,
+            create_time,
+            update_time
+        ) values
+         (
+                #{id}
+                ,
+                #{name}
+                ,
+                #{remark}
+                ,
+                #{typeCode}
+                ,
+                now()
+                ,
+                #{updateTime}
+                
+         )
+    </insert>
+    <update id="updateSysDd" parameterType="SysDd">
+        update sys_dd
+        <set>
+                    <if test="name!=null ">
+                        name=#{name},
+                    </if>
+                    <if test="remark!=null ">
+                        remark=#{remark},
+                    </if>
+                    <if test="typeCode!=null ">
+                        type_code=#{typeCode},
+                    </if>
+                    <if test="createTime!=null ">
+                        create_time=#{createTime},
+                    </if>
+                    update_time=now()
+          </set>
+         where id=#{id}
+    </update>
+    <delete id="deleteSysDd" >
+        delete from sys_dd where id=#{id}
+    </delete>
+    <delete id="deleteSysDdByCondition" >
+        delete T from sys_dd T
+        <include refid="match"/>
+    </delete>
+    <insert id="batchSaveSysDd" parameterType="SysDd">
+        INSERT INTO sys_dd (  id,  name,  remark,  type_code,  create_time,  update_time )
+        VALUES
+        <foreach collection="list" item="sysDd" separator=",">
+            (  #{sysDd.id},  #{sysDd.name},  #{sysDd.remark},  #{sysDd.typeCode},  #{sysDd.createTime},  #{sysDd.updateTime}  )
+        </foreach>
+    </insert>
+    <delete id="batchDeleteSysDd" parameterType="string">
+        delete from sys_dd where id in
+        <foreach item="rowData" collection="array" open="(" separator="," close=")">
+            #{rowData}
+        </foreach>
+    </delete>
+    <update id="batchUpdateSysDd" parameterType="SysDd">
+        update sys_dd
+        <set>
+                    <if test="name!=null ">
+                        name=#{name},
+                    </if>
+                    <if test="remark!=null ">
+                        remark=#{remark},
+                    </if>
+                    <if test="typeCode!=null ">
+                        type_code=#{typeCode},
+                    </if>
+                    <if test="createTime!=null ">
+                        create_time=#{createTime},
+                    </if>
+                    update_time=now()
+          </set>
+         where id in
+           <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+               #{rowData}
+           </foreach>
+    </update>
+    <!--##################################################generated code end,do not update######################################################################-->
+    <select id="censysList" resultType="HashMap" parameterType="string">
+        select name,remark from sys_dd where type_code=#{code}
+    </select>
+</mapper>

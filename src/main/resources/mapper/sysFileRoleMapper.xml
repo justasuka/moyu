@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.SysFileRoleDao">
+    <!--########################################################generated code start,do not update################################################################-->
+    <sql id="projection">
+        <choose>
+            <when test="pager!=null and pager.includes!=null">
+                <foreach collection="pager.includes" item="field" separator=",">
+                    T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                </foreach>
+            </when>
+            <when test="pager!=null and pager.excludes!=null">
+                <trim suffixOverrides=",">
+                    <if test="!pager.excludes.contains('id')">
+                        T.id,
+                    </if>
+                    <if test="!pager.excludes.contains('sysRoleId')">
+                        T.sys_role_id,
+                    </if>
+                    <if test="!pager.excludes.contains('sysFileId')">
+                        T.sys_file_id,
+                    </if>
+                    <if test="!pager.excludes.contains('sysFileParentId')">
+                        T.sys_file_parent_id,
+                    </if>
+                </trim>
+            </when>
+            <otherwise>
+                T.*
+            </otherwise>
+        </choose>
+    </sql>
+    <sql id="match">
+        <where>
+            <if test="id!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('id')">
+                        <trim suffixOverrides=",">
+                            T.id like concat('%',#{id},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        T.id=#{id}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="sysRoleId!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('sysRoleId')">
+                        <trim suffixOverrides=",">
+                            and T.sys_role_id like concat('%',#{sysRoleId},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.sys_role_id=#{sysRoleId}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="sysFileId!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('sysFileId')">
+                        <trim suffixOverrides=",">
+                            and T.sys_file_id like concat('%',#{sysFileId},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.sys_file_id=#{sysFileId}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="sysFileParentId!=null">
+                <choose>
+                    <when test="pager!=null and pager.like!=null and pager.like.contains('sysFileParentId')">
+                        <trim suffixOverrides=",">
+                            and T.sys_file_parent_id like concat('%',#{sysFileParentId},'%')
+                        </trim>
+                    </when>
+                    <otherwise>
+                        and T.sys_file_parent_id=#{sysFileParentId}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="pager!=null and pager.rangeField!=null and pager.rangeArray!=null and pager.rangeArray.length==2">
+                <foreach collection="pager.rangeArray" item="item"  index="i">
+                    <if test="i==0 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &gt;= #{item}
+                    </if>
+                    <if test="i==1 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &lt;= #{item}
+                    </if>
+                </foreach>
+
+            </if>
+        </where>
+    </sql>
+    <sql id="sort">
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by
+            <foreach collection="pager.sortField.split(',')" item="s" index="i" separator=",">
+                T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(s)} ${pager.sortOrder.split(',')[i]}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="page">
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </sql>
+
+
+    <select id="findSysFileRoleListByCondition" parameterType="SysFileRole" resultType="SysFileRole">
+        select
+        <include refid="projection"/>
+        from sys_file_role T
+        <include refid="match"/>
+        <include refid="sort"/>
+        <include refid="page"/>
+    </select>
+
+    <select id="findSysFileRoleAllList" parameterType="SysFileRole" resultType="SysFileRole">
+        select
+        <include refid="projection"/>
+        from sys_file_role T
+        <include refid="match"/>
+        <include refid="sort"/>
+    </select>
+
+    <select id="findSysFileRoleCountByCondition" parameterType="SysFileRole" resultType="long">
+        select count(*) from sys_file_role T
+        <include refid="match"/>
+    </select>
+    <select id="findSysFileRoleById" resultType="SysFileRole">
+        select * from sys_file_role where id=#{id}
+    </select>
+    <select id="findOneSysFileRoleByCondition" parameterType="SysFileRole" resultType="SysFileRole">
+        select
+        <include refid="projection"/>
+        from sys_file_role T
+        <include refid="match"/>
+    </select>
+    <insert id="saveSysFileRole" parameterType="SysFileRole">
+        insert into sys_file_role
+        (
+        id,
+        sys_role_id,
+        sys_file_id,
+        sys_file_parent_id
+        ) values
+        (
+        #{id}
+        ,
+        #{sysRoleId}
+        ,
+        #{sysFileId}
+        ,
+        #{sysFileParentId}
+
+        )
+    </insert>
+    <update id="updateSysFileRole" parameterType="SysFileRole">
+        update sys_file_role
+        <set>
+            <if test="sysRoleId!=null ">
+                sys_role_id=#{sysRoleId},
+            </if>
+            <if test="sysFileId!=null ">
+                sys_file_id=#{sysFileId},
+            </if>
+            <if test="sysFileParentId!=null ">
+                sys_file_parent_id=#{sysFileParentId}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteSysFileRole" >
+        delete from sys_file_role where id=#{id}
+    </delete>
+    <delete id="deleteSysFileRoleByCondition" >
+        delete T from sys_file_role T
+        <include refid="match"/>
+    </delete>
+    <insert id="batchSaveSysFileRole" parameterType="SysFileRole">
+        INSERT INTO sys_file_role (  id,  sys_role_id,  sys_file_id,  sys_file_parent_id )
+        VALUES
+        <foreach collection="list" item="sysFileRole" separator=",">
+            (  #{sysFileRole.id},  #{sysFileRole.sysRoleId},  #{sysFileRole.sysFileId},  #{sysFileRole.sysFileParentId}  )
+        </foreach>
+    </insert>
+    <delete id="batchDeleteSysFileRole" parameterType="string">
+        delete from sys_file_role where id in
+        <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+            #{rowData}
+        </foreach>
+    </delete>
+    <update id="batchUpdateSysFileRole" parameterType="SysFileRole">
+        update sys_file_role
+        <set>
+            <if test="sysRoleId!=null ">
+                sys_role_id=#{sysRoleId},
+            </if>
+            <if test="sysFileId!=null ">
+                sys_file_id=#{sysFileId},
+            </if>
+            <if test="sysFileParentId!=null ">
+                sys_file_parent_id=#{sysFileParentId}
+            </if>
+        </set>
+        where id in
+        <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+            #{rowData}
+        </foreach>
+    </update>
+    <select id="getSysFileRoleTableField" resultType="ExcelExport">
+        select column_name as 'key',column_comment as 'name' from information_schema.columns where table_name='sys_file_role'
+        <!--####### 如果有多个数据库的表一致的情况下，需要加上此标签，例如 archives and table_schema = 'archives' #########-->
+    </select>
+    <!--##################################################generated code end,do not update######################################################################-->
+    <delete id="deleteRoleByRoleId">
+        delete from sys_file_role where sys_role_id=#{roleId}
+    </delete>
+    <select id="findSysFileRoleByRoleId" resultType="SysFileRole">
+        select * from sys_file_role where sys_role_id in
+        <foreach item="rowData" collection="rowData" open="(" separator="," close=")">
+            #{rowData}
+        </foreach>
+    </select>
+
+</mapper>

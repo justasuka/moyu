@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cfl.cflwork.dao.dd.SysDdtypeDao">
+    <!--########################################################generated code start,do not update################################################################-->
+    <sql id="projection">
+        <choose>
+             <when test="pager!=null and pager.includes!=null">
+                 <foreach collection="pager.includes" item="field" separator=",">
+                     T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(field)}
+                 </foreach>
+             </when>
+             <when test="pager!=null and pager.excludes!=null">
+                 <trim suffixOverrides=",">
+                         <if test="!pager.excludes.contains('id')">
+                             T.id,
+                         </if>
+                         <if test="!pager.excludes.contains('name')">
+                             T.name,
+                         </if>
+                         <if test="!pager.excludes.contains('code')">
+                             T.code,
+                         </if>
+                         <if test="!pager.excludes.contains('createTime')">
+                             T.create_time,
+                         </if>
+                         <if test="!pager.excludes.contains('updateTime')">
+                             T.update_time,
+                         </if>
+                 </trim>
+             </when>
+             <otherwise>
+                 T.*
+             </otherwise>
+         </choose>
+    </sql>
+    <sql id="match">
+        <where>
+              <if test="id!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='id'">
+                             T.id like concat('%',#{id},'%')
+                         </when>
+                         <otherwise>
+                             T.id=#{id}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="name!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='name'">
+                            and T.name like concat('%',#{name},'%')
+                         </when>
+                         <otherwise>
+                            and T.name=#{name}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="code!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='code'">
+                            and T.code like concat('%',#{code},'%')
+                         </when>
+                         <otherwise>
+                            and T.code=#{code}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="createTime!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='createTime'">
+                            and T.create_time like concat('%',#{createTime},'%')
+                         </when>
+                         <otherwise>
+                            and T.create_time=#{createTime}
+                         </otherwise>
+                      </choose>
+              </if>
+              <if test="updateTime!=null">
+                    <choose>
+                         <when test="pager!=null and pager.like=='updateTime'">
+                            and T.update_time like concat('%',#{updateTime},'%')
+                         </when>
+                         <otherwise>
+                            and T.update_time=#{updateTime}
+                         </otherwise>
+                      </choose>
+              </if>
+            <if test="pager!=null and pager.rangeField!=null and pager.rangeArray!=null and pager.rangeArray.length==2">
+                <foreach collection="pager.rangeArray" item="item"  index="i">
+                    <if test="i==0 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &gt;= #{item}
+                    </if>
+                    <if test="i==1 and item!=null">
+                        and ${@cn.hutool.core.util.StrUtil@toUnderlineCase(pager.rangeField)} &lt;= #{item}
+                    </if>
+                </foreach>
+
+            </if>
+        </where>
+    </sql>
+    <sql id="sort">
+        <if test="pager!=null and pager.sortField!=null and pager.sortOrder!=null">
+            order by
+            <foreach collection="pager.sortField.split(',')" item="s" index="i" separator=",">
+                T.${@cn.hutool.core.util.StrUtil@toUnderlineCase(s)} ${pager.sortOrder.split(',')[i]}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="page">
+        <if test="pager!=null and  pager.paging">
+            limit #{pager.beginRow},#{pager.pageSize}
+        </if>
+    </sql>
+
+
+    <select id="findSysDdtypeListByCondition" parameterType="top.cfl.cflwork.pojo.dd.SysDdtype" resultType="top.cfl.cflwork.pojo.dd.SysDdtype">
+        select
+         <include refid="projection"/>
+         from sys_ddtype T
+         <include refid="match"/>
+         <include refid="sort"/>
+         <include refid="page"/>
+
+
+    </select>
+    <select id="findSysDdtypeCountByCondition" parameterType="top.cfl.cflwork.pojo.dd.SysDdtype" resultType="long">
+        select count(*) from sys_ddtype T
+        <include refid="match"/>
+    </select>
+    <select id="findSysDdtypeById" resultType="top.cfl.cflwork.pojo.dd.SysDdtype">
+        select * from sys_ddtype where id=#{id}
+    </select>
+    <select id="findOneSysDdtypeByCondition" parameterType="top.cfl.cflwork.pojo.dd.SysDdtype" resultType="top.cfl.cflwork.pojo.dd.SysDdtype">
+        select
+         <include refid="projection"/>
+         from sys_ddtype T
+        <include refid="match"/>
+    </select>
+    <insert id="saveSysDdtype" parameterType="top.cfl.cflwork.pojo.dd.SysDdtype">
+        insert into sys_ddtype
+         (
+            id,
+            name,
+            code,
+            create_time,
+            update_time
+        ) values
+         (
+                #{id}
+                ,
+                #{name}
+                ,
+                #{code}
+                ,
+                now()
+                ,
+                #{updateTime}
+                
+         )
+    </insert>
+    <update id="updateSysDdtype" parameterType="top.cfl.cflwork.pojo.dd.SysDdtype">
+        update sys_ddtype
+        <set>
+                    <if test="name!=null ">
+                        name=#{name},
+                    </if>
+                    <if test="code!=null ">
+                        code=#{code},
+                    </if>
+                    <if test="createTime!=null ">
+                        create_time=#{createTime},
+                    </if>
+                    update_time=now()
+          </set>
+         where id=#{id}
+    </update>
+    <delete id="deleteSysDdtype" >
+        delete from sys_ddtype where id=#{id}
+    </delete>
+    <delete id="deleteSysDdtypeByCondition" >
+        delete T from sys_ddtype T
+        <include refid="match"/>
+    </delete>
+    <insert id="batchSaveSysDdtype" parameterType="top.cfl.cflwork.pojo.dd.SysDdtype">
+        INSERT INTO sys_ddtype (  id,  name,  code,  create_time,  update_time )
+        VALUES
+        <foreach collection="list" item="sysDdtype" separator=",">
+            (  #{sysDdtype.id},  #{sysDdtype.name},  #{sysDdtype.code},  #{sysDdtype.createTime},  #{sysDdtype.updateTime}  )
+        </foreach>
+    </insert>
+    <!--##################################################generated code end,do not update######################################################################-->
+</mapper>
